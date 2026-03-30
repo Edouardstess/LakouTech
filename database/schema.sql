@@ -7,6 +7,22 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- ============================================================
+-- TABLE: users (Authentification & Rôles)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS users (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    nom VARCHAR(100) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    role VARCHAR(20) CHECK (role IN ('Admin','Direction','Enseignant','Comptable','Parent')) DEFAULT 'Direction',
+    etablissement_id UUID REFERENCES etablissements(id),
+    actif BOOLEAN DEFAULT TRUE,
+    last_login TIMESTAMP,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- ============================================================
 -- TABLE: etablissements
 -- ============================================================
 CREATE TABLE IF NOT EXISTS etablissements (

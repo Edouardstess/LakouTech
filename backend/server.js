@@ -31,6 +31,7 @@ const pool = new Pool({
 app.use((req, res, next) => { req.db = pool; next(); });
 
 // ---- Routes ----
+app.use('/api/auth', require('./functions/auth'));
 app.use('/api/etablissements', require('./functions/etablissements'));
 app.use('/api/eleves', require('./functions/eleves'));
 app.use('/api/classes', require('./functions/classes'));

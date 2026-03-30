@@ -33,14 +33,35 @@ function createEntity(name) {
 const API_BASE_LOCAL = 'http://localhost:3001';
 
 async function apiCallLocal(method, path, body) {
+  const token = localStorage.getItem('edumanager_token');
+  const headers = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
   const res = await fetch(`${API_BASE_LOCAL}${path}`, {
     method,
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     body: body ? JSON.stringify(body) : undefined
   });
   if (!res.ok) throw new Error(`API Error: ${res.status}`);
   return res.json();
 }
+
+export const Auth = {
+  login: async (email, password) => {
+    const data = await apiCallLocal('POST', '/api/auth/login', { email, password });
+    if (data.token) {
+      localStorage.setItem('edumanager_token', data.token);
+      localStorage.setItem('edumanager_user', JSON.stringify(data.user));
+    }
+    return data;
+  },
+  register: (data) => apiCallLocal('POST', '/api/auth/register', data),
+  me: () => apiCallLocal('GET', '/api/auth/me'),
+  logout: () => {
+    localStorage.removeItem('edumanager_token');
+    localStorage.removeItem('edumanager_user');
+  }
+};
 
 function createLocalEntity(name) {
   const pluralMap = { eleve: 'eleves', classe: 'classes', enseignant: 'enseignants', matiere: 'matieres', note: 'notes', presence: 'presences', paiement: 'paiements', emploiTemps: 'emploitempss', personnel: 'personnel', message: 'messages', depense: 'depenses', etablissement: 'etablissements' };

@@ -200,11 +200,15 @@ DELETE /api/etablissements/:id
 
 ## ✨ **Améliorations**
 
-1. ✅ **Cohérence API:** Tous les endpoints suivent le même pattern CRUD
-2. ✅ **Scalabilité:** Facile d'ajouter de nouvelles entités
-3. ✅ **Documentation:** CLAUDE.md complet avec exemples
-4. ✅ **Configuration:** .env centralisé et sécurisé
-5. ✅ **Compatibilité:** Frontend/Backend synchronized
+1. ✅ **Auth JWT** - Implémentation du système de login/register/me.
+2. ✅ **Table Users** - Création de la table pour les comptes utilisateurs.
+3. ✅ **Middleware Auth** - Protection des routes via token JWT.
+4. ✅ **API v1.1.0** - Transition vers une API sécurisée.
+5. ✅ **Cohérence API:** Tous les endpoints suivent le même pattern CRUD
+6. ✅ **Scalabilité:** Facile d'ajouter de nouvelles entités
+7. ✅ **Documentation:** CLAUDE.md complet avec exemples
+8. ✅ **Configuration:** .env centralisé et sécurisé
+9. ✅ **Compatibilité:** Frontend/Backend synchronized
 
 ---
 

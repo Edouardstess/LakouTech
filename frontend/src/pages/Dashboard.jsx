@@ -1,14 +1,18 @@
-import { useState, useEffect } from "react";
-import { Eleve, Enseignant, Classe, Paiement, Presence, Personnel, Message, Depense } from "../api/entities";
+import { Eleve, Enseignant, Classe, Paiement, Presence, Personnel, Message, Depense, Auth } from "../api/entities";
 
 export default function Dashboard() {
+  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('edumanager_user')));
   const [stats, setStats] = useState({ eleves: 0, enseignants: 0, classes: 0, paiements: 0, absences: 0, personnel: 0, messages: 0, depenses: 0 });
   const [loading, setLoading] = useState(true);
   const [activePage, setActivePage] = useState("dashboard");
 
   useEffect(() => {
-    loadStats();
-  }, []);
+    if (user) loadStats();
+  }, [user]);
+
+  if (!user) {
+    return <LoginPage onLogin={(userData) => setUser(userData)} />;
+  }
 
   async function loadStats() {
     try {
@@ -68,8 +72,21 @@ export default function Dashboard() {
             </button>
           ))}
         </nav>
-        <div style={{ padding: "16px 20px", borderTop: "1px solid rgba(255,255,255,0.1)", fontSize: 12, opacity: 0.5 }}>
-          © 2025 EduManager v1.0
+        <div style={{ padding: "16px 20px", borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+            <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#4F46E5", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 700 }}>{user?.nom?.charAt(0).toUpperCase()}</div>
+            <div style={{ flex: 1, overflow: "hidden" }}>
+              <div style={{ fontSize: 13, fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{user?.nom}</div>
+              <div style={{ fontSize: 11, opacity: 0.5 }}>{user?.role}</div>
+            </div>
+          </div>
+          <button onClick={() => { Auth.logout(); setUser(null); }} 
+            style={{ width: "100%", padding: "8px", background: "rgba(220,38,38,0.2)", border: "1px solid rgba(220,38,38,0.4)", borderRadius: 6, color: "#FCA5A5", fontSize: 12, cursor: "pointer", fontWeight: 600 }}>
+            Déconnexion
+          </button>
+        </div>
+        <div style={{ padding: "12px 20px", fontSize: 11, opacity: 0.3 }}>
+          © 2025 EduManager v1.1
         </div>
       </div>
 
@@ -1046,3 +1063,71 @@ const inputStyle = { width: "100%", padding: "9px 12px", border: "1px solid #E2E
 const labelStyle = { display: "block", fontSize: 12, fontWeight: 600, color: "#374151", marginBottom: 4 };
 const tdStyle = { padding: "12px 16px", fontSize: 14, color: "#374151" };
 const smallBtn = { padding: "5px 10px", border: "none", borderRadius: 6, cursor: "pointer", fontSize: 13, marginRight: 4 };
+
+// ===== LOGIN PAGE =====
+function LoginPage({ onLogin }) {
+  const [isLogin, setIsLogin] = useState(true);
+  const [form, setForm] = useState({ nom: "", email: "", password: "", role: "Admin" });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      if (isLogin) {
+        const data = await Auth.login(form.email, form.password);
+        onLogin(data.user);
+      } else {
+        await Auth.register(form);
+        const data = await Auth.login(form.email, form.password);
+        onLogin(data.user);
+      }
+    } catch (err) {
+      setError("Identifiants invalides ou erreur serveur.");
+    }
+    setLoading(false);
+  }
+
+  return (
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%)", fontFamily: "'Segoe UI', sans-serif" }}>
+      <div style={{ background: "white", padding: 40, borderRadius: 20, boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)", width: "100%", maxWidth: 400 }}>
+        <div style={{ textAlign: "center", marginBottom: 30 }}>
+          <div style={{ fontSize: 40, marginBottom: 10 }}>🎓</div>
+          <h1 style={{ fontSize: 24, fontWeight: 700, color: "#111827" }}>EduManager</h1>
+          <p style={{ color: "#6B7280", marginTop: 5 }}>{isLogin ? "Connectez-vous à votre espace" : "Créez votre compte administrateur"}</p>
+        </div>
+
+        {error && <div style={{ background: "#FEE2E2", color: "#DC2626", padding: "12px", borderRadius: 8, marginBottom: 20, fontSize: 14, textAlign: "center" }}>{error}</div>}
+
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {!isLogin && (
+            <div>
+              <label style={labelStyle}>Nom complet</label>
+              <input required value={form.nom} onChange={e => setForm({ ...form, nom: e.target.value })} style={inputStyle} placeholder="Jean Dupont" />
+            </div>
+          )}
+          <div>
+            <label style={labelStyle}>Email</label>
+            <input required type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} style={inputStyle} placeholder="admin@ecole.ht" />
+          </div>
+          <div>
+            <label style={labelStyle}>Mot de passe</label>
+            <input required type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} style={inputStyle} placeholder="••••••••" />
+          </div>
+          
+          <button type="submit" disabled={loading} style={btnStyle("#3B82F6")}>
+            {loading ? "Chargement..." : isLogin ? "Se connecter" : "Créer le compte"}
+          </button>
+        </form>
+
+        <div style={{ marginTop: 24, textAlign: "center", fontSize: 14 }}>
+          <button onClick={() => setIsLogin(!isLogin)} style={{ background: "none", border: "none", color: "#3B82F6", cursor: "pointer", fontWeight: 600 }}>
+            {isLogin ? "Pas encore de compte ? S'inscrire" : "Déjà un compte ? Se connecter"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
