@@ -1,0 +1,66 @@
+{
+  "version": "1.0.0",
+  "entities": {
+    "Etablissement": {
+      "description": "Établissements scolaires",
+      "fields": {
+        "nom": "string (requis)",
+        "type": "enum: Primaire|Secondaire|Supérieur|Mixte",
+        "adresse": "string",
+        "telephone": "string",
+        "email": "string",
+        "directeur": "string",
+        "actif": "boolean"
+      }
+    },
+    "Eleve": {
+      "description": "Élèves inscrits",
+      "fields": {
+        "nom": "string (requis)",
+        "prenom": "string (requis)",
+        "date_naissance": "date",
+        "sexe": "enum: M|F",
+        "numero_matricule": "string (unique)",
+        "classe_id": "ref:Classe",
+        "etablissement_id": "ref:Etablissement",
+        "nom_parent": "string",
+        "tel_parent": "string",
+        "statut": "enum: Actif|Inactif|Transféré|Diplômé"
+      }
+    },
+    "Presence": {
+      "description": "Présences et absences",
+      "fields": {
+        "eleve_id": "ref:Eleve (requis)",
+        "classe_id": "ref:Classe",
+        "date": "date (requis)",
+        "statut": "enum: Présent|Absent|Retard|Excusé (requis)",
+        "motif": "string",
+        "enregistre_par": "string"
+      }
+    },
+    "Note": {
+      "description": "Notes des évaluations",
+      "fields": {
+        "eleve_id": "ref:Eleve",
+        "matiere_id": "ref:Matiere",
+        "valeur": "number (0-20)",
+        "type_note": "enum: Devoir|Interrogation|Examen|TP|Oral",
+        "trimestre": "enum: T1|T2|T3",
+        "date_evaluation": "date"
+      }
+    },
+    "Paiement": {
+      "description": "Frais scolaires et paiements",
+      "fields": {
+        "eleve_id": "ref:Eleve",
+        "montant": "number",
+        "type_paiement": "enum: Inscription|Scolarité|Transport|Cantine|Activités|Autre",
+        "methode": "enum: Espèces|Virement|Mobile Money|Carte|Chèque",
+        "statut": "enum: Payé|En attente|Partiel|Annulé",
+        "trimestre": "enum: T1|T2|T3",
+        "reference": "string"
+      }
+    }
+  }
+}
