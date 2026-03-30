@@ -1,3 +1,4 @@
+# EduManager — Blueprint Render.com
 
 services:
   # 1. Base de données PostgreSQL
@@ -5,9 +6,9 @@ services:
     name: edumanager-db
     databaseName: edumanager
     user: edumanager_user
-    plan: free # Free tier
+    plan: free
 
-  # 2. Backend (Web Service Docker)
+  # 2. Backend (Web Service Node.js)
   - type: web
     name: edumanager-backend
     env: docker
@@ -25,9 +26,9 @@ services:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 3001
+        value: "3001"
       - key: CORS_ORIGIN
-        value: https://edumanager-frontend.onrender.com # À ajuster après création
+        value: https://edumanager-frontend.onrender.com
 
   # 3. Frontend (Web Service Docker)
   - type: web

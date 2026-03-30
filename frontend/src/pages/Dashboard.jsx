@@ -1,4 +1,5 @@
-import { Eleve, Enseignant, Classe, Paiement, Presence, Personnel, Message, Depense, Auth } from "../api/entities";
+import React, { useState, useEffect } from "react";
+import { Eleve, Enseignant, Classe, Paiement, Presence, Personnel, Message, Depense, Auth, Note, Matiere, EmploiTemps, Etablissement } from "../api/entities";
 
 export default function Dashboard() {
   const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('edumanager_user')));

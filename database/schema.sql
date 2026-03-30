@@ -7,23 +7,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- ============================================================
--- TABLE: users (Authentification & Rôles)
--- ============================================================
-CREATE TABLE IF NOT EXISTS users (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    nom VARCHAR(100) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password TEXT NOT NULL,
-    role VARCHAR(20) CHECK (role IN ('Admin','Direction','Enseignant','Comptable','Parent')) DEFAULT 'Direction',
-    etablissement_id UUID REFERENCES etablissements(id),
-    actif BOOLEAN DEFAULT TRUE,
-    last_login TIMESTAMP,
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()
-);
-
--- ============================================================
--- TABLE: etablissements
+-- TABLE: etablissements (DOIT être créée EN PREMIER car référencée par users)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS etablissements (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -35,6 +19,22 @@ CREATE TABLE IF NOT EXISTS etablissements (
     directeur VARCHAR(255),
     logo_url TEXT,
     actif BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- ============================================================
+-- TABLE: users (Authentification & Rôles)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS users (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    nom VARCHAR(100) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    role VARCHAR(20) CHECK (role IN ('Admin','Direction','Enseignant','Comptable','Parent')) DEFAULT 'Direction',
+    etablissement_id UUID REFERENCES etablissements(id),
+    actif BOOLEAN DEFAULT TRUE,
+    last_login TIMESTAMP,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );
@@ -227,6 +227,8 @@ CREATE TABLE IF NOT EXISTS depenses (
 -- ============================================================
 -- INDEX pour performances
 -- ============================================================
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_users_etablissement ON users(etablissement_id);
 CREATE INDEX IF NOT EXISTS idx_eleves_classe ON eleves(classe_id);
 CREATE INDEX IF NOT EXISTS idx_eleves_etablissement ON eleves(etablissement_id);
 CREATE INDEX IF NOT EXISTS idx_presences_date ON presences(date);
@@ -248,3 +250,4 @@ COMMENT ON TABLE eleves IS 'Table des élèves inscrits dans les établissements
 COMMENT ON TABLE presences IS 'Suivi des présences et absences journalières';
 COMMENT ON TABLE notes IS 'Notes et évaluations des élèves par trimestre';
 COMMENT ON TABLE paiements IS 'Frais scolaires et paiements des familles';
+COMMENT ON TABLE users IS 'Comptes utilisateurs et authentification JWT';

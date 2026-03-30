@@ -30,20 +30,25 @@ const pool = new Pool({
 // Injecter db dans chaque requête
 app.use((req, res, next) => { req.db = pool; next(); });
 
-// ---- Routes ----
+// ---- Auth middleware ----
+const authMiddleware = require('./middleware/auth');
+
+// ---- Routes publiques ----
 app.use('/api/auth', require('./functions/auth'));
-app.use('/api/etablissements', require('./functions/etablissements'));
-app.use('/api/eleves', require('./functions/eleves'));
-app.use('/api/classes', require('./functions/classes'));
-app.use('/api/enseignants', require('./functions/enseignants'));
-app.use('/api/matieres', require('./functions/matieres'));
-app.use('/api/presences', require('./functions/presences'));
-app.use('/api/notes', require('./functions/notes'));
-app.use('/api/paiements', require('./functions/paiements'));
-app.use('/api/emploitempss', require('./functions/emploi_temps'));
-app.use('/api/personnel', require('./functions/personnel'));
-app.use('/api/messages', require('./functions/messages'));
-app.use('/api/depenses', require('./functions/depenses'));
+
+// ---- Routes protégées (JWT requis) ----
+app.use('/api/etablissements', authMiddleware, require('./functions/etablissements'));
+app.use('/api/eleves', authMiddleware, require('./functions/eleves'));
+app.use('/api/classes', authMiddleware, require('./functions/classes'));
+app.use('/api/enseignants', authMiddleware, require('./functions/enseignants'));
+app.use('/api/matieres', authMiddleware, require('./functions/matieres'));
+app.use('/api/presences', authMiddleware, require('./functions/presences'));
+app.use('/api/notes', authMiddleware, require('./functions/notes'));
+app.use('/api/paiements', authMiddleware, require('./functions/paiements'));
+app.use('/api/emploitempss', authMiddleware, require('./functions/emploi_temps'));
+app.use('/api/personnel', authMiddleware, require('./functions/personnel'));
+app.use('/api/messages', authMiddleware, require('./functions/messages'));
+app.use('/api/depenses', authMiddleware, require('./functions/depenses'));
 
 // Route health check
 app.get('/health', (req, res) => res.json({ status: 'OK', version: '1.0.0', timestamp: new Date().toISOString() }));
