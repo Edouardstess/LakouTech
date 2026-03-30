@@ -1,6 +1,3 @@
-/**
- * EduManager — Blueprint Render
- */
 
 services:
   # 1. Base de données PostgreSQL
