@@ -47,7 +47,7 @@ app.use('/api/matieres', authMiddleware, require('./functions/matieres'));
 app.use('/api/presences', authMiddleware, require('./functions/presences'));
 app.use('/api/notes', authMiddleware, require('./functions/notes'));
 app.use('/api/paiements', authMiddleware, require('./functions/paiements'));
-app.use('/api/emploitempss', authMiddleware, require('./functions/emploi_temps'));
+app.use('/api/emploitemps', authMiddleware, require('./functions/emploi_temps'));
 app.use('/api/personnel', authMiddleware, require('./functions/personnel'));
 app.use('/api/messages', authMiddleware, require('./functions/messages'));
 app.use('/api/depenses', authMiddleware, require('./functions/depenses'));

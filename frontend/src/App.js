@@ -12,12 +12,14 @@ import PaiementsPage from './pages/PaiementsPage';
 import PersonnelPage from './pages/PersonnelPage';
 import MessagesPage from './pages/MessagesPage';
 import FinancesPage from './pages/FinancesPage';
+import MatieresPage from './pages/MatieresPage';
 
 const pages = [
   { id: "dashboard", label: "Tableau de bord", icon: "🏠" },
-  { id: "eleves", label: "Élèves", icon: "👨‍🎓" },
   { id: "classes", label: "Classes", icon: "🏫" },
+  { id: "matieres", label: "Matières", icon: "📚" },
   { id: "enseignants", label: "Enseignants", icon: "👨‍🏫" },
+  { id: "eleves", label: "Élèves", icon: "👨‍🎓" },
   { id: "presences", label: "Présences", icon: "📋" },
   { id: "notes", label: "Notes & Bulletins", icon: "📝" },
   { id: "emploiTemps", label: "Emplois du temps", icon: "🗓️" },
@@ -31,6 +33,7 @@ const pageComponents = {
   dashboard: DashboardHome,
   eleves: ElevesPage,
   classes: ClassesPage,
+  matieres: MatieresPage,
   enseignants: EnseignantsPage,
   presences: PresencesPage,
   notes: NotesPage,

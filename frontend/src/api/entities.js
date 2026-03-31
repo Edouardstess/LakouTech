@@ -63,7 +63,7 @@ function createEntity(name) {
     note: 'notes',
     presence: 'presences',
     paiement: 'paiements',
-    emploiTemps: 'emploitempss',
+    emploiTemps: 'emploitemps',
     personnel: 'personnel',
     message: 'messages',
     depense: 'depenses',
