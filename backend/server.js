@@ -63,10 +63,15 @@ app.use((err, req, res, next) => {
 });
 
 const authRouter = require('./functions/auth');
+const { initializeDatabase } = require('./functions/init_db');
 
 app.listen(PORT, async () => {
   console.log(`🚀 EduManager API démarré sur le port ${PORT}`);
-  // Initialiser le SuperAdmin au premier lancement
+  
+  // 1. Initialiser la structure de la DB si nécessaire
+  await initializeDatabase(pool);
+  
+  // 2. Initialiser le SuperAdmin au premier lancement
   if (authRouter.initializeAdmin) {
     await authRouter.initializeAdmin(pool);
   }
