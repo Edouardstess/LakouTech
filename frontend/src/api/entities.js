@@ -4,7 +4,7 @@
  */
 
 // Déterminer l'URL de base de l'API
-const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+const API_BASE = process.env.REACT_APP_API_URL || 'https://edumanager-backend-67i1.onrender.com';
 
 // ---- Utilitaire d'appel API ----
 async function apiCall(method, path, body) {
