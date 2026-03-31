@@ -124,20 +124,33 @@ router.get('/me', protect, async (req, res) => {
 // ---- Initialisation SuperAdmin ----
 router.initializeAdmin = async (db) => {
   try {
-    const { rows } = await db.query('SELECT COUNT(*) FROM users');
-    if (parseInt(rows[0].count) === 0) {
-      const bcrypt = require('bcryptjs');
+    const email = 'admin@edumanager.ht';
+    const { rows } = await db.query('SELECT id FROM users WHERE email = $1', [email]);
+    
+    if (rows.length === 0) {
+      console.log('🔄 Création du compte SuperAdmin...');
       const hashedPassword = await bcrypt.hash('EduManager2026!', 10);
       
-      // Récupérer le premier établissement pour lier l'admin
-      const etablissement = await db.query('SELECT id FROM etablissements LIMIT 1');
-      const etablissementId = etablissement.rows[0]?.id || null;
+      // S'assurer qu'au moins un établissement existe
+      let etablissementId = null;
+      const etabResult = await db.query('SELECT id FROM etablissements LIMIT 1');
+      if (etabResult.rows.length === 0) {
+        const newEtab = await db.query(
+          "INSERT INTO etablissements (nom, type) VALUES ($1, $2) RETURNING id",
+          ['Mon Établissement', 'Mixte']
+        );
+        etablissementId = newEtab.rows[0].id;
+      } else {
+        etablissementId = etabResult.rows[0].id;
+      }
 
       await db.query(
         'INSERT INTO users (nom, email, password, role, etablissement_id) VALUES ($1, $2, $3, $4, $5)',
-        ['Super Administrateur', 'admin@edumanager.ht', hashedPassword, 'Admin', etablissementId]
+        ['Super Administrateur', email, hashedPassword, 'Admin', etablissementId]
       );
-      console.log('✅ Compte SuperAdmin créé : admin@edumanager.ht / EduManager2026!');
+      console.log(`✅ Compte SuperAdmin créé : ${email} / EduManager2026!`);
+    } else {
+      console.log('✅ Le compte SuperAdmin existe déjà.');
     }
   } catch (err) {
     console.error('❌ Erreur initialisation Admin:', err.message);
