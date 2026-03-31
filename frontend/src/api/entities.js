@@ -1,10 +1,11 @@
 /**
  * EduManager — Clients API Entités
  * Communique avec le backend REST API avec authentification JWT.
+ * Détecte automatiquement l'environnement (local vs production).
  */
 
-// Déterminer l'URL de base de l'API (Forcé en dur pour contourner le cache de Render)
-const API_BASE = 'https://edumanager-backend-67i1.onrender.com';
+// Détermine l'URL dynamiquement : variable d'env en build, ou localhost en dev
+const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:3001';
 
 // ---- Utilitaire d'appel API ----
 async function apiCall(method, path, body) {

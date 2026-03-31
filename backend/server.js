@@ -7,7 +7,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const { Pool } = require('pg');
-require('dotenv').config();
+require('dotenv').config({ path: '../.env' });
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -32,9 +32,11 @@ app.use((req, res, next) => { req.db = pool; next(); });
 
 // ---- Auth middleware ----
 const authMiddleware = require('./middleware/auth');
+const authRouter = require('./functions/auth');
+const { initializeDatabase } = require('./functions/init_db');
 
 // ---- Routes publiques ----
-app.use('/api/auth', require('./functions/auth'));
+app.use('/api/auth', authRouter);
 
 // ---- Routes protégées (JWT requis) ----
 app.use('/api/etablissements', authMiddleware, require('./functions/etablissements'));
@@ -51,7 +53,7 @@ app.use('/api/messages', authMiddleware, require('./functions/messages'));
 app.use('/api/depenses', authMiddleware, require('./functions/depenses'));
 
 // Route health check
-app.get('/health', (req, res) => res.json({ status: 'OK', version: '1.0.0', timestamp: new Date().toISOString() }));
+app.get('/health', (req, res) => res.json({ status: 'OK', version: '2.0.0', timestamp: new Date().toISOString() }));
 
 // Route 404
 app.use((req, res) => res.status(404).json({ success: false, error: 'Route non trouvée' }));
@@ -62,11 +64,8 @@ app.use((err, req, res, next) => {
   res.status(500).json({ success: false, error: 'Erreur serveur interne' });
 });
 
-const authRouter = require('./functions/auth');
-const { initializeDatabase } = require('./functions/init_db');
-
 app.listen(PORT, async () => {
-  console.log(`🚀 EduManager API démarré sur le port ${PORT}`);
+  console.log(`🚀 EduManager API v2.0 démarré sur le port ${PORT}`);
   
   // 1. Initialiser la structure de la DB si nécessaire
   await initializeDatabase(pool);

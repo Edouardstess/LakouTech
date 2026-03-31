@@ -1,0 +1,12 @@
+≡ƒÜÇ EduManager API v2.0 d├⌐marr├⌐ sur le port 3001
+≡ƒöä Initialisation du sch├⌐ma de la base de donn├⌐es...
+Γ¥î Erreur lors de l'initialisation de la DB: AggregateError
+    at C:\xampp\htdocs\edumanager_project\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async initializeDatabase (C:\xampp\htdocs\edumanager_project\backend\functions\init_db.js:10:5)
+    at async Server.<anonymous> (C:\xampp\htdocs\edumanager_project\backend\server.js:71:3)
+Γ¥î Erreur initialisation Admin: AggregateError
+    at C:\xampp\htdocs\edumanager_project\backend\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async router.initializeAdmin (C:\xampp\htdocs\edumanager_project\backend\functions\auth.js:128:22)
+    at async Server.<anonymous> (C:\xampp\htdocs\edumanager_project\backend\server.js:75:5)

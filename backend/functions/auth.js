@@ -6,7 +6,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
+require('dotenv').config({ path: '../.env' });
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_for_dev_only';
 const TOKEN_EXPIRY = '24h';
@@ -153,7 +153,7 @@ router.initializeAdmin = async (db) => {
       console.log('✅ Le compte SuperAdmin existe déjà.');
     }
   } catch (err) {
-    console.error('❌ Erreur initialisation Admin:', err.message);
+    console.error('❌ Erreur initialisation Admin:', err.stack);
   }
 };
 
