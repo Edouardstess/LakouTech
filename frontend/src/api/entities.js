@@ -72,14 +72,15 @@ function createEntity(name) {
   const path = `/api/${pluralMap[name] || name + 's'}`;
 
   return {
-    list: () => apiCall('GET', path),
-    get: (id) => apiCall('GET', `${path}/${id}`),
+    list: async () => { const res = await apiCall('GET', path); return res.data || []; },
+    get: async (id) => { const res = await apiCall('GET', `${path}/${id}`); return res.data || null; },
     create: (data) => apiCall('POST', path, data),
     update: (id, data) => apiCall('PUT', `${path}/${id}`, data),
     delete: (id) => apiCall('DELETE', `${path}/${id}`),
-    filter: (params) => {
+    filter: async (params) => {
       const query = new URLSearchParams(params).toString();
-      return apiCall('GET', `${path}?${query}`);
+      const res = await apiCall('GET', `${path}?${query}`);
+      return res.data || [];
     }
   };
 }
