@@ -62,6 +62,14 @@ app.use((err, req, res, next) => {
   res.status(500).json({ success: false, error: 'Erreur serveur interne' });
 });
 
-app.listen(PORT, () => console.log(`🚀 EduManager API démarré sur le port ${PORT}`));
+const authRouter = require('./functions/auth');
+
+app.listen(PORT, async () => {
+  console.log(`🚀 EduManager API démarré sur le port ${PORT}`);
+  // Initialiser le SuperAdmin au premier lancement
+  if (authRouter.initializeAdmin) {
+    await authRouter.initializeAdmin(pool);
+  }
+});
 
 module.exports = app;

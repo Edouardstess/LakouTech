@@ -121,4 +121,27 @@ router.get('/me', protect, async (req, res) => {
   }
 });
 
+// ---- Initialisation SuperAdmin ----
+router.initializeAdmin = async (db) => {
+  try {
+    const { rows } = await db.query('SELECT COUNT(*) FROM users');
+    if (parseInt(rows[0].count) === 0) {
+      const bcrypt = require('bcryptjs');
+      const hashedPassword = await bcrypt.hash('EduManager2026!', 10);
+      
+      // Récupérer le premier établissement pour lier l'admin
+      const etablissement = await db.query('SELECT id FROM etablissements LIMIT 1');
+      const etablissementId = etablissement.rows[0]?.id || null;
+
+      await db.query(
+        'INSERT INTO users (nom, email, password, role, etablissement_id) VALUES ($1, $2, $3, $4, $5)',
+        ['Super Administrateur', 'admin@edumanager.ht', hashedPassword, 'Admin', etablissementId]
+      );
+      console.log('✅ Compte SuperAdmin créé : admin@edumanager.ht / EduManager2026!');
+    }
+  } catch (err) {
+    console.error('❌ Erreur initialisation Admin:', err.message);
+  }
+};
+
 module.exports = router;
