@@ -28,7 +28,7 @@ services:
       - key: PORT
         value: "3001"
       - key: CORS_ORIGIN
-        value: https://edumanager-frontend.onrender.com
+        value: https://edumanager-frontend-4bqx.onrender.com
 
   # 3. Frontend (Web Service Docker)
   - type: web
